@@ -47,8 +47,8 @@ namespace SSMPUtils.Client
             Log.LogDebug($"Sending huddle packet for scene {scene} at location {location}");
             sender.SendSingleData(PacketIDs.Huddle, new HuddlePacket
             {
-                scene = scene,
-                location = location,
+                Scene = scene,
+                Position = location,
             });
         }
     }

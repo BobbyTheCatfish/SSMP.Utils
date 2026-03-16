@@ -15,11 +15,11 @@ namespace SSMPUtils.Utils.Tests
         {
             var packet = new WarpPacket
             {
-                scene = "Bonetown",
-                location = new Vector2(100, 15),
+                Scene = "Bonetown",
+                Position = new Vector2(100, 15),
             };
 
-            PacketReceiver.OnWarp(packet);
+            PacketReceiver.OnHuddle(packet);
         }
     }
 }

@@ -30,8 +30,8 @@ namespace SSMPUtils.Server
         {
             Broadcast(PacketIDs.Warp, new Client.Packets.HuddlePacket
             {
-                scene = scene,
-                location = location
+                Scene = scene,
+                Position = location
             }, senderId);
         }
     }

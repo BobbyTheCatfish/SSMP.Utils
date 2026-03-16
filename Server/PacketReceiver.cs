@@ -20,7 +20,7 @@ namespace SSMPUtils.Server
 
         public static void OnHuddle(ushort id, HuddlePacket data)
         {
-            PacketSender.BroadcastWarp(data.scene, data.location, id);
+            PacketSender.BroadcastWarp(data.Scene, data.Position, id);
         }
     }
 }

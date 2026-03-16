@@ -12,23 +12,20 @@ namespace SSMPUtils.Client.Packets
         public bool IsReliable => true;
         public bool DropReliableDataIfNewerExists => true;
 
-        public string scene = "";
-        public string gate = "";
-        public Vector2 location;
+        public string Scene = "";
+        public Vector2 Position;
 
         public void WriteData(IPacket packet)
         {
-            packet.Write(scene);
-            packet.Write(gate);
-            packet.Write(location.x);
-            packet.Write(location.y);
+            packet.Write(Scene);
+            packet.Write(Position.x);
+            packet.Write(Position.y);
         }
 
         public void ReadData(IPacket packet)
         {
-            scene = packet.ReadString();
-            gate = packet.ReadString();
-            location = new Vector2(packet.ReadFloat(), packet.ReadFloat());
+            Scene = packet.ReadString();
+            Position = new Vector2(packet.ReadFloat(), packet.ReadFloat());
         }
     }
 
