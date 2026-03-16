@@ -29,6 +29,9 @@ namespace SSMPUtils.Client
             PacketSender.Init();
 
             api.CommandManager.RegisterCommand(new Huddle());
+            api.CommandManager.RegisterCommand(new TeleportRequest());
+            api.CommandManager.RegisterCommand(new TeleportAccept());
+            api.CommandManager.RegisterCommand(new TeleportDeny());
 
             api.ClientManager.DisconnectEvent += () => Spectate.ReturnToSelf();
 

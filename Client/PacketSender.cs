@@ -81,5 +81,15 @@ namespace SSMPUtils.Client
                 PlayerId = request.PlayerId
             });
         }
+
+        internal static void SendTeleportRequest(ushort playerId)
+        {
+            var data = new TeleportRequestPacket
+            {
+                PlayerId = playerId
+            };
+
+            sender.SendSingleData(PacketIDs.TeleportRequest, data);
+        }
     }
 }
