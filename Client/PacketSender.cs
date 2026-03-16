@@ -1,14 +1,14 @@
 ﻿using SSMP.Api.Client;
 using SSMP.Api.Client.Networking;
-using SSMP_Utils.Client.Packets;
-using SSMP_Utils.Utils;
+using SSMPUtils.Client.Packets;
+using SSMPUtils.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace SSMP_Utils.Client
+namespace SSMPUtils.Client
 {
     internal static class PacketSender
     {

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using SSMP.Api.Server;
-using SSMP_Utils.Utils;
+using SSMPUtils.Utils;
 
-namespace SSMP_Utils.Server
+namespace SSMPUtils.Server
 {
     internal class Server : ServerAddon
     {
         protected override string Name => "SSMP Utils";
-        protected override string Version => SSMP_UtilsPlugin.Version;
+        protected override string Version => SSMPUtilsPlugin.Version;
         public override uint ApiVersion => Config.SSMPApiVersion;
         public override bool NeedsNetwork => true;
 

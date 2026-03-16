@@ -1,17 +1,17 @@
 ﻿using SSMP.Api.Client;
-using SSMP_Utils.Client.Commands;
-using SSMP_Utils.Client.Modules;
-using SSMP_Utils.Utils;
+using SSMPUtils.Client.Commands;
+using SSMPUtils.Client.Modules;
+using SSMPUtils.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSMP_Utils.Client
+namespace SSMPUtils.Client
 {
     internal class Client : ClientAddon
     {
         protected override string Name => "SSMP Utils";
-        protected override string Version => SSMP_UtilsPlugin.Version;
+        protected override string Version => SSMPUtilsPlugin.Version;
         public override uint ApiVersion => Config.SSMPApiVersion;
         public override bool NeedsNetwork => true;
 

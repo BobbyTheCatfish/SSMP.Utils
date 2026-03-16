@@ -1,11 +1,11 @@
-﻿using SSMP_Utils.Client;
-using SSMP_Utils.Server.Packets;
+﻿using SSMPUtils.Client;
+using SSMPUtils.Server.Packets;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace SSMP_Utils.Utils.Tests
+namespace SSMPUtils.Utils.Tests
 {
     internal class WarpTest : BaseTest
     {

@@ -5,11 +5,11 @@ using System.Linq;
 using UnityEngine;
 using System.Text;
 using UnityEngine.SceneManagement;
-using SSMP_Utils.Client.Modules.Patches;
+using SSMPUtils.Client.Modules.Patches;
 using XGamingRuntime;
-using SSMP_Utils.Utils;
+using SSMPUtils.Utils;
 
-namespace SSMP_Utils.Client.Modules
+namespace SSMPUtils.Client.Modules
 {
     internal static class Spectate
     {

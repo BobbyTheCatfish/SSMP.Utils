@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using HarmonyLib;
-using SSMP_Utils.Utils;
+using SSMPUtils.Utils;
 using UnityEngine;
 
-namespace SSMP_Utils.Client.Modules.Patches
+namespace SSMPUtils.Client.Modules.Patches
 {
     [HarmonyPatch]
     internal class MaskerPatch

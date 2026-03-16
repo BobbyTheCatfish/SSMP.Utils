@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSMP_Utils.Utils
+namespace SSMPUtils.Utils
 {
     internal static class Log
     {
@@ -13,7 +13,7 @@ namespace SSMP_Utils.Utils
             logger = log;
 
 #if DEBUG
-            //FilteredLogs.API.ApplyFilter("SSMP_Utils");
+            //FilteredLogs.API.ApplyFilter("SSMPUtils");
 #endif
         }
 

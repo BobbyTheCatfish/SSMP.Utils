@@ -1,12 +1,12 @@
 ﻿using SSMP.Api.Server;
 using SSMP.Api.Server.Networking;
-using SSMP_Utils.Utils;
-using SSMP_Utils.Client.Packets;
+using SSMPUtils.Utils;
+using SSMPUtils.Client.Packets;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSMP_Utils.Server
+namespace SSMPUtils.Server
 {
     internal static class PacketReceiver
     {

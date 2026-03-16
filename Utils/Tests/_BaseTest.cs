@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace SSMP_Utils.Utils.Tests
+namespace SSMPUtils.Utils.Tests
 {
     internal abstract class BaseTest
     {

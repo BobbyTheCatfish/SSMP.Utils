@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSMP_Utils.Client.Commands
+namespace SSMPUtils.Client.Commands
 {
     internal class UtilsCommands : IClientCommand
     {

@@ -1,24 +1,24 @@
 using BepInEx;
-using SSMP_Utils.Client.Modules;
-using SSMP_Utils.Utils;
-using SSMP_Utils.Utils.Tests;
+using SSMPUtils.Client.Modules;
+using SSMPUtils.Utils;
+using SSMPUtils.Utils.Tests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using SSMP_Utils.Client.Modules.Patches;
+using SSMPUtils.Client.Modules.Patches;
 
-namespace SSMP_Utils;
+namespace SSMPUtils;
 
 // TODO - adjust the plugin guid as needed
 [BepInAutoPlugin(id: "io.github.bobbythecatfish.ssmp.utils")]
-public partial class SSMP_UtilsPlugin : BaseUnityPlugin
+public partial class SSMPUtilsPlugin : BaseUnityPlugin
 {
     TestManager testManager = new TestManager();
     public static readonly List<Action> NextFrames = [];
     List<Action> _nextFrames = [];
 
-    internal static SSMP_UtilsPlugin instance;
+    internal static SSMPUtilsPlugin instance;
     private void Awake()
     {
         instance = this;

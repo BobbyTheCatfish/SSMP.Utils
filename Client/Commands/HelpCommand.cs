@@ -3,7 +3,7 @@ using SSMP;
 using SSMP.Api.Command;
 using SSMP.Api.Command.Client;
 using SSMP.Api.Command.Server;
-using SSMP_Utils.Utils;
+using SSMPUtils.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
-namespace SSMP_Utils.Client.Commands
+namespace SSMPUtils.Client.Commands
 {
     internal class HelpCommand : IClientCommand
     {

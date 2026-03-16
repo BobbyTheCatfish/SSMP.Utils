@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace SSMP_Utils.Utils
+namespace SSMPUtils.Utils
 {
     internal class Common
     {

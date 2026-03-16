@@ -1,11 +1,11 @@
 ﻿using SSMP.Networking.Packet;
-using SSMP_Utils.Utils;
+using SSMPUtils.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace SSMP_Utils.Server.Packets
+namespace SSMPUtils.Server.Packets
 {
     internal class WarpPacket : Client.Packets.HuddlePacket { }
 

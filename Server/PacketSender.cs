@@ -1,13 +1,13 @@
 ﻿using SSMP.Api.Server;
 using SSMP.Api.Server.Networking;
 using SSMP.Networking.Packet;
-using SSMP_Utils.Utils;
+using SSMPUtils.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace SSMP_Utils.Server
+namespace SSMPUtils.Server
 {
     internal static class PacketSender
     {

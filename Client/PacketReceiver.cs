@@ -1,6 +1,6 @@
 ﻿using SSMP.Api.Client.Networking;
-using SSMP_Utils.Utils;
-using SSMP_Utils.Server.Packets;
+using SSMPUtils.Utils;
+using SSMPUtils.Server.Packets;
 
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using UnityEngine;
 
-namespace SSMP_Utils.Client
+namespace SSMPUtils.Client
 {
     internal static class PacketReceiver
     {
@@ -37,7 +37,7 @@ namespace SSMP_Utils.Client
             {
                 GameManager.UnsafeInstance.OnFinishedEnteringScene -= SetHornetPosition;
                 Log.LogInfo("Setting hornet position");
-                //SSMP_UtilsPlugin.instance.StartCoroutine(Common.SetHornetPosition(data.location));
+                //SSMPUtilsPlugin.instance.StartCoroutine(Common.SetHornetPosition(data.location));
                 //GameManager.instance.FinishedEnteringScene();
                 hornet.transform.SetPosition2D(data.location);
                 //HeroController.instance.RelinquishControl();

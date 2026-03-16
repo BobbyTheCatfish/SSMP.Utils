@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSMPUtils.Utils
+namespace SSMPUtils.Client.Modules
 {
-    internal enum PacketIDs
+    internal class Huddle
     {
-        Huddle,
-        Warp
     }
 }
