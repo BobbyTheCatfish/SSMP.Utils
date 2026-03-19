@@ -71,6 +71,7 @@ namespace SSMPUtils.Client.Modules
                 }
 
                 request = requests.Last();
+                requests.RemoveAt(requests.Count - 1);
             }
 
             request.Responded = true;
@@ -82,7 +83,7 @@ namespace SSMPUtils.Client.Modules
                 return;
             }
 
-
+            PacketSender.SendTeleportAccept(request);
         }
     }
 }

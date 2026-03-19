@@ -17,7 +17,7 @@ namespace SSMPUtils.Client.Commands
         public void Execute(string[] arguments)
         {
             var player = TeleportRequest.GetUsernameFromArgs(arguments, false);
-            TeleportRequests.RespondToRequest(false, player);
+            TeleportRequests.RespondToRequest(true, player);
         }
     }
 
