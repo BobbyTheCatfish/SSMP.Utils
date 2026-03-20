@@ -13,24 +13,7 @@ namespace SSMPUtils.Client.Modules
 {
     internal static class PlayerDeaths
     {
-        public enum CauseOfDeath
-        {
-            Unknown,
-            Player,
-            Enemy,
-            Spikes,
-            Acid,
-            Lava,
-            Pit,
-            Coal,
-            Zap,
-            Explosion,
-            Sink,
-            Steam,
-            CoalSpikes
-        }
-
-        public static CauseOfDeath LatestCause = CauseOfDeath.Unknown;
+        public static CauseOfDeath LatestCause = CauseOfDeath.Generic;
         public static ushort LatestPlayerAttack = 0;
         public static DateTime PlayerAttackTime = DateTime.MinValue;
 
@@ -73,7 +56,6 @@ namespace SSMPUtils.Client.Modules
         {
             return hazardType switch
             {
-                HazardType.NON_HAZARD => CauseOfDeath.Unknown,
                 HazardType.ENEMY => CauseOfDeath.Enemy,
                 HazardType.SPIKES => CauseOfDeath.Spikes,
                 HazardType.ACID => CauseOfDeath.Acid,
@@ -85,8 +67,7 @@ namespace SSMPUtils.Client.Modules
                 HazardType.SINK => CauseOfDeath.Sink,
                 HazardType.STEAM => CauseOfDeath.Steam,
                 HazardType.RESPAWN_PIT => CauseOfDeath.Pit,
-                HazardType.COAL_SPIKES => CauseOfDeath.CoalSpikes,
-                _ => CauseOfDeath.Unknown
+                _ => CauseOfDeath.Generic
             };
         }
     }

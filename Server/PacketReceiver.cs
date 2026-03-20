@@ -6,7 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SSMP.Math;
-using Cause = SSMPUtils.Client.Modules.PlayerDeaths.CauseOfDeath;
+using Cause = SSMPUtils.Utils.CauseOfDeath;
+using SSMPUtils.Data;
 
 namespace SSMPUtils.Server
 {
@@ -101,7 +102,7 @@ namespace SSMPUtils.Server
 
             if (data.Cause != Cause.Player && data.RanAway)
             {
-                deathString += " while running away from " + opponent;
+                deathString += " while fighting " + opponent;
             }
 
             Server.api.ServerManager.BroadcastMessage(deathString);
@@ -109,22 +110,18 @@ namespace SSMPUtils.Server
 
         static string DetermineDeathString(Cause cause, string username)
         {
-            return cause switch
+            if (!DeathMessages.Messages.TryGetValue(cause, out var strings))
             {
-                Cause.Player => $"lost a duel to {username}",
-                Cause.Enemy => "had an intimate encounter with an enemy",
-                Cause.Spikes => "got impaled by spikes",
-                Cause.Acid => "forgot to equip Isma's Tear before hopping in acid",
-                Cause.Lava => "sung Lava Chicken too hard and became one",
-                Cause.Pit => "fell down a hole",
-                Cause.Coal => "got hit by a lump of coal in the head",
-                Cause.Zap => "was electrocuted to death",
-                Cause.Explosion => "went Last Judge mode and blew up",
-                Cause.Sink => "sunk so low that they couldn't get out",
-                Cause.Steam => "took a ride in a kettle",
-                Cause.CoalSpikes => "did something with coal spikes (not sure what that is)",
-                _ => "died so epicly that there isn't even a reason",
-            };
+                strings = DeathMessages.Messages[Cause.Generic];
+            }
+
+            var str = strings.GetRandomElement();
+            if (cause == Cause.Player)
+            {
+                str += " " + username;
+            }
+
+            return str;
         }
     }
 }

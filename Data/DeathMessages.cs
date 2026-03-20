@@ -1,0 +1,95 @@
+﻿using SSMPUtils.Utils;
+using System.Collections.Generic;
+
+namespace SSMPUtils.Data
+{
+    internal static class DeathMessages
+    {
+        public static readonly Dictionary<CauseOfDeath, string[]> Messages = new()
+        {
+            { CauseOfDeath.Generic, [
+                "died",
+                "unalived",
+                "was killed",
+                "decided to set up a Cocoon Skip",
+                "took damage equal to or more than their current HP"
+            ] },
+            { CauseOfDeath.Player, [
+                "lost a duel to",
+                "made masterful use of their vulnerability frames while fighting",
+                "failed to negotiate with",
+                "regrettably ended their encounter with",
+                "fell to one of the classic blunders while fighting"
+            ] },
+            { CauseOfDeath.Enemy, [
+                "had an intimate encounter with an enemy",
+                "made masterful use of their vulnerability frames",
+                "didn't see the enemy's final form",
+                "mistook an enemy hitbox for a wall",
+                "was squashed by a common bug",
+            ] },
+            { CauseOfDeath.Spikes, [
+                "got impaled by spikes",
+                "didn't see the sharp things",
+                "fought the spikes and lost",
+                "attempted rudimentary acupuncture",
+                "was pricked to death"
+            ] },
+            { CauseOfDeath.Acid, [
+                "forgot to equip Isma's Tear before hopping in acid",
+                "mistook sulfuric acid for water",
+                "tried to swim in acid",
+                "got into a fight with a pool of liquid"
+            ] },
+            { CauseOfDeath.Lava, [
+                "discovered what the sun feels like",
+                "had a charring revelation",
+                "tried to swim in lava",
+                "went up in flames",
+                "discovered the floor was lava"
+            ] },
+            { CauseOfDeath.Pit, [
+                "fell down a hole",
+                "never hit the bottom",
+                "saw a giant ravine and decided to jump",
+                "hit the ground too hard",
+                "was doomed to fall"
+            ] },
+            { CauseOfDeath.Coal, [
+                "got hit in the head by a lump of coal",
+                "shouldn't have collected all those hot rocks",
+                "was burned to a crisp by a chunk of rock",
+                "discovered that coals are hot"
+            ] },
+            { CauseOfDeath.Zap, [
+                "was electrocuted to death",
+                "was utterly shocked",
+                "became one with the Voltvyrm"
+            ] },
+            { CauseOfDeath.Explosion, [
+                "went Last Judge mode and blew up",
+                "was blown to fluff",
+                "looked back at the explosion",
+                "went out with a bang"
+            ] },
+            { CauseOfDeath.Sink, [
+                "sunk so low that they couldn't get out",
+                "fell out of the world"
+            ] },
+            { CauseOfDeath.Steam, [
+                "took a ride in a tea kettle",
+                "fell into a pressure cooker",
+                "got a face full of hot air",
+                "was caught venting",
+                "was blown away by the amount of steam in the organ"
+            ] },
+            { CauseOfDeath.Frost, [
+                "chilled out a little too hard",
+                "froze up",
+                "froze to death",
+                "forgot to wear a coat",
+                "became an icicle"
+            ] }
+        };
+    }
+}

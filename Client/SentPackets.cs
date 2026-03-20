@@ -77,7 +77,7 @@ namespace SSMPUtils.Client.Packets
         public bool DropReliableDataIfNewerExists => true;
 
         public ushort KillerID;
-        public CauseOfDeath Cause = CauseOfDeath.Unknown;
+        public CauseOfDeath Cause = CauseOfDeath.Generic;
         public bool RanAway = false;
         public string Scene = "";
         public virtual void WriteData(IPacket packet)

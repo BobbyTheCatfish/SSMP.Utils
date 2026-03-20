@@ -93,7 +93,7 @@ namespace SSMPUtils.Client
             sender.SendSingleData(PacketIDs.TeleportRequest, data);
         }
 
-        internal static void SendDeath(PlayerDeaths.CauseOfDeath cause, ushort killerId = 0, bool ranAway = false)
+        internal static void SendDeath(CauseOfDeath cause, ushort killerId = 0, bool ranAway = false)
         {
             var scene = SceneManager.GetActiveScene().name;
             SceneTeleportMap.GetTeleportMap().TryGetValue(scene, out var map);

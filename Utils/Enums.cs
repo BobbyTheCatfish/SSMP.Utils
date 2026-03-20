@@ -17,4 +17,21 @@ namespace SSMPUtils.Utils
     {
         TeleportDenied,
     }
+
+    internal enum CauseOfDeath
+    {
+        Generic,
+        Player,
+        Enemy,
+        Spikes,
+        Acid,
+        Lava,
+        Pit,
+        Coal,
+        Zap,
+        Explosion,
+        Sink,
+        Steam,
+        Frost
+    }
 }
