@@ -98,7 +98,7 @@ namespace SSMPUtils.Server
             if (player == null) return;
 
             var opponent = Server.GetPlayer(data.KillerID);
-            var deathString = player.Username + " " + DetermineDeathString(data.Cause, opponent);
+            var deathString = Common.ColoredUsername(player) + " " + DetermineDeathString(data.Cause, opponent);
 
             if (data.Cause != Cause.Player && data.RanAway)
             {
@@ -115,7 +115,7 @@ namespace SSMPUtils.Server
                 strings = DeathMessages.Messages[Cause.Generic];
             }
 
-            var str = strings.GetRandomElement();
+            var str = strings.GetRandom();
             if (cause == Cause.Player)
             {
                 str += " " + Common.ColoredUsername(player);

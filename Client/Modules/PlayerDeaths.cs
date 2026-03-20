@@ -38,11 +38,16 @@ namespace SSMPUtils.Client.Modules
             }
 
             Log.LogInfo(isPlayer, damager.name);
-            if (isPlayer)
+            if (isPlayer && parent)
             {
                 LatestCause = CauseOfDeath.Player;
 
-                var player = Client.api.ClientManager.Players.FirstOrDefault(p => p.PlayerContainer == damager.gameObject);
+                var player = Client.api.ClientManager.Players.FirstOrDefault(p => p.PlayerObject == parent.gameObject);
+                if (player == null)
+                {
+                    Log.LogWarning("Attacked by unknown player");
+                    return;
+                }
                 LatestPlayerAttack = player?.Id ?? 0;
                 PlayerAttackTime = DateTime.Now;
                 return;

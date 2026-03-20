@@ -44,18 +44,18 @@ namespace SSMPUtils.Utils
         {
             var colorStr = color switch
             {
-                Colors.White => "white",
-                Colors.Black => "black",
-                Colors.Orange => "orange",
-                Colors.Purple => "purple",
-                Colors.Blue => "blue",
-                Colors.Green => "green",
-                Colors.Red => "red",
-                Colors.Yellow => "yellow",
-                _ => "white"
+                Colors.White => "&f",
+                Colors.Black => "&1",
+                Colors.Orange => "&6",
+                Colors.Purple => "&5",
+                Colors.Blue => "&b",
+                Colors.Green => "&2",
+                Colors.Red => "&4",
+                Colors.Yellow => "&e",
+                _ => "&f"
             };
 
-            return $"<color=\"{colorStr}\">{text}</color>";
+            return $"{colorStr}{text}&r";
         }
 
         public static string ColoredUsername(IServerPlayer? player, Colors defaultColor = Colors.White)
