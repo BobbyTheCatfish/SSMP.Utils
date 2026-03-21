@@ -33,7 +33,6 @@ namespace SSMPUtils.Client.Modules
         static GameObject UpArrow;
         static GameObject DownArrow;
 
-
         public static void Init()
         {
             Client.api.ClientManager.PlayerEnterSceneEvent += AddPlayer;
@@ -51,6 +50,11 @@ namespace SSMPUtils.Client.Modules
         public static void FocusOnPlayer(MoveDir dir)
         {
             if (InScene.Count == 0) return;
+
+            var prevIndex = FollowedPlayerIndex;
+            EndPreviousMode();
+            FollowedPlayerIndex = prevIndex;
+
             if (dir == MoveDir.Prev)
             {
                 if (FollowedPlayerIndex <= 0) FollowedPlayerIndex = InScene.Count - 1;
@@ -64,6 +68,11 @@ namespace SSMPUtils.Client.Modules
 
             var player = InScene[FollowedPlayerIndex];
             FollowedPlayer = player.PlayerObject;
+            if (FollowedPlayer == null)
+            {
+                return;
+            }
+
             var transform = FollowedPlayer.transform;
             ImmobilizePlayer();
 
@@ -123,6 +132,17 @@ namespace SSMPUtils.Client.Modules
             DownArrow.SetActive(!down);
             UpArrow.SetActive(!up);
         }
+
+        public static void EndPreviousMode()
+        {
+            FreecamMovementVector = Vector2.zero;
+            freecam = false;
+            FollowedPlayerIndex = -1;
+            FollowedPlayer = null;
+            ToggleUpDownArrows(true);
+            GameManager.instance.cameraCtrl.camTarget.heroTransform = HeroController.instance.transform;
+            FixMasks(HeroController.instance.gameObject);
+        }
         
         public static void ReturnToSelf(bool wasSceneChange = false)
         {
@@ -150,7 +170,6 @@ namespace SSMPUtils.Client.Modules
         {
             var remaskers = Resources.FindObjectsOfTypeAll<Remasker>();
             var hero = playerObject.GetComponent<Collider2D>();
-            Log.LogInfo($"Fixing {remaskers.Length} masks");
             foreach (var masker in remaskers)
             {
                 if (masker == null) continue;
@@ -158,12 +177,10 @@ namespace SSMPUtils.Client.Modules
                 var collider = masker.GetComponent<Collider2D>();
                 if (collider != null && collider.IsTouching(hero))
                 {
-                    Log.LogInfo($"Entering mask");
                     masker.Entered();
                 }
                 else
                 {
-                    Log.LogInfo($"Exiting mask");
                     masker.Exited(false);
                 }
             }
@@ -172,9 +189,11 @@ namespace SSMPUtils.Client.Modules
         public static void Freecam()
         {
             if (freecam) return;
+            EndPreviousMode();
+
             freecam = true;
-            FreecamMovementVector = Vector2.zero;
             ImmobilizePlayer();
+            FixMasks(HeroController.instance.gameObject);
             arrows.SetActive(true);
             ToggleUpDownArrows(true);
         }

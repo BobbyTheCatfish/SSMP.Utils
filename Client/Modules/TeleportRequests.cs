@@ -34,7 +34,7 @@ namespace SSMPUtils.Client.Modules
             requests.Add(request);
 
             // Notify
-            var requestStr = $"{Common.ColoredUsername(player)} has requested to teleport to you." +
+            var requestStr = $"{Common.ColoredUsername(player)} has requested to teleport to you. " +
                 "Use /tpaccept or /tpdeny within 30 seconds to respond.";
 
             Client.LocalChat(requestStr);

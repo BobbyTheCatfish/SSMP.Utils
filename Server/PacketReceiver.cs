@@ -8,6 +8,10 @@ using System.Text;
 using SSMP.Math;
 using Cause = SSMPUtils.Utils.CauseOfDeath;
 using SSMPUtils.Data;
+using SSMPUtils.Client.Modules;
+using SSMP.Api.Client;
+using SSMP.Api.Command.Server;
+using SSMP.Api.Command;
 
 namespace SSMPUtils.Server
 {
@@ -23,6 +27,7 @@ namespace SSMPUtils.Server
             receiver.RegisterPacketHandler<TeleportPacket>(PacketIDs.TeleportAccept, OnTeleportRequestAccept);
             receiver.RegisterPacketHandler<MessagePacket>(PacketIDs.Message, OnMessage);
             receiver.RegisterPacketHandler<DeathPacket>(PacketIDs.PlayerDeath, OnPlayerDeath);
+            receiver.RegisterPacketHandler<HealthPacket>(PacketIDs.PlayerHealth, OnPlayerHealth);
         }
 
         public static void OnHuddle(ushort id, TeleportPacket data)
@@ -122,6 +127,17 @@ namespace SSMPUtils.Server
             }
 
             return str;
+        }
+
+        static void OnPlayerHealth(ushort id, HealthPacket data)
+        {
+            Log.LogInfo($"Received health from {id}");
+            var player = PlayerDataTracker.ServerInstance.GetPlayer(id);
+            player.health = data.Masks;
+            player.maxHealth = data.MaxHealth;
+            player.blueMasks = data.BlueMasks;
+
+            PacketSender.BroadcastPlayerHealth(id, data.Masks, data.MaxHealth, data.BlueMasks, data.LifebloodState);
         }
     }
 }

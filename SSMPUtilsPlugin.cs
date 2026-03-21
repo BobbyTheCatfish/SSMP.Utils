@@ -32,6 +32,7 @@ public partial class SSMPUtilsPlugin : BaseUnityPlugin
 
         Harmony.CreateAndPatchAll(typeof(MaskerPatch), "ssmp.utils");
         Harmony.CreateAndPatchAll(typeof(DamageHeroPatch), "ssmp.utils");
+        Harmony.CreateAndPatchAll(typeof(HealthPatch), "ssmp.utils");
 
         HeroController.OnHeroInstanceSet += InitializeHCModules;
 
@@ -43,6 +44,7 @@ public partial class SSMPUtilsPlugin : BaseUnityPlugin
 
         Spectate.CreateFreecamUI();
         controller.OnDeath += PlayerDeaths.OnDeath;
+        PlayerHealth.BlueHealthAddListener();
     }
 
     private void Update()

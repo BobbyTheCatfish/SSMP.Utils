@@ -34,6 +34,7 @@ namespace SSMPUtils.Client
             api.CommandManager.RegisterCommand(new TeleportDeny());
 
             api.ClientManager.DisconnectEvent += () => Spectate.ReturnToSelf();
+            api.ClientManager.PlayerEnterSceneEvent += PlayerHealth.OnPlayerJoin;
 
             Spectate.Init();
 

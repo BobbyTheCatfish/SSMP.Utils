@@ -2,9 +2,6 @@
 using SSMP.Networking.Packet;
 using SSMPUtils.Utils;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using static SSMPUtils.Client.Modules.PlayerDeaths;
 
 namespace SSMPUtils.Client.Packets
 {
@@ -97,6 +94,31 @@ namespace SSMPUtils.Client.Packets
         }
     }
 
+    public class HealthPacket : IPacketData
+    {
+        public bool IsReliable => true;
+        public virtual bool DropReliableDataIfNewerExists => true;
+
+        public ushort Masks;
+        public ushort MaxHealth;
+        public ushort BlueMasks;
+        public bool LifebloodState;
+        public virtual void WriteData(IPacket packet)
+        {
+            packet.Write(Masks);
+            packet.Write(MaxHealth);
+            packet.Write(BlueMasks);
+            packet.Write(LifebloodState);
+        }
+
+        public virtual void ReadData(IPacket packet)
+        {
+            Masks = packet.ReadUShort();
+            MaxHealth = packet.ReadUShort();
+            BlueMasks = packet.ReadUShort();
+            LifebloodState = packet.ReadBool();
+        }
+    }
     public static class Packets
     {
         internal static IPacketData Instantiate(PacketIDs packetID)
@@ -108,6 +130,7 @@ namespace SSMPUtils.Client.Packets
                 PacketIDs.TeleportAccept => new TeleportPacket(),
                 PacketIDs.Message => new MessagePacket(),
                 PacketIDs.PlayerDeath => new DeathPacket(),
+                PacketIDs.PlayerHealth => new HealthPacket(),
                 _ => throw new NotImplementedException()
             };
         }

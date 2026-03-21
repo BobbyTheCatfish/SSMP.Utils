@@ -5,6 +5,7 @@ using SSMPUtils.Client.Modules;
 using UnityEngine;
 using SSMPUtils.Client.Packets;
 using System;
+using static SSMPUtils.Server.Packets.Packets;
 
 namespace SSMPUtils.Client
 {
@@ -18,6 +19,7 @@ namespace SSMPUtils.Client
             receiver.RegisterPacketHandler<TeleportRequestPacket>(PacketIDs.TeleportRequest, OnTeleportRequest);
             receiver.RegisterPacketHandler<TeleportPacket>(PacketIDs.TeleportAccept, OnTeleportAccepted);
             receiver.RegisterPacketHandler<MessagePacket>(PacketIDs.Message, OnMessage);
+            receiver.RegisterPacketHandler<PlayerHealthPacket>(PacketIDs.PlayerHealth, OnHealth);
         }
 
         public static void OnHuddle(TeleportPacket data)
@@ -55,6 +57,14 @@ namespace SSMPUtils.Client
             };
 
             Client.LocalChat(message);
+        }
+
+        public static void OnHealth(PlayerHealthPacket data)
+        {
+            var player = Client.api.ClientManager.GetPlayer(data.PlayerId);
+            if (player == null) return;
+
+            PlayerHealth.SetPlayerHealth(player, data.Masks, data.MaxHealth, data.BlueMasks, data.LifebloodState);
         }
     }
 }

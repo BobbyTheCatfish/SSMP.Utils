@@ -115,5 +115,19 @@ namespace SSMPUtils.Client
 
             sender.SendSingleData(PacketIDs.PlayerDeath, data);
         }
+
+        internal static void SendHealth(int masks, int maxMasks, int blueMasks, bool lifebloodState)
+        {
+            Log.LogInfo("Sending health");
+            var data = new HealthPacket
+            {
+                Masks = (ushort)masks,
+                MaxHealth = (ushort)maxMasks,
+                BlueMasks = (ushort)blueMasks,
+                LifebloodState = lifebloodState
+            };
+
+            sender.SendSingleData(PacketIDs.PlayerHealth, data);
+        }
     }
 }

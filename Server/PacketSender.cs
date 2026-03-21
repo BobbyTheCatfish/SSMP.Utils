@@ -63,5 +63,33 @@ namespace SSMPUtils.Server
 
             sender.SendSingleData(PacketIDs.Message, data, recipientId);
         }
+
+        internal static void BroadcastPlayerHealth(ushort playerId, ushort masks, ushort maxHealth, ushort blueMasks, bool lifebloodState)
+        {
+            var data = new Packets.Packets.PlayerHealthPacket
+            {
+                PlayerId = playerId,
+                Masks = masks,
+                MaxHealth = maxHealth,
+                BlueMasks = blueMasks,
+                LifebloodState = lifebloodState
+            };
+
+            Broadcast(PacketIDs.PlayerHealth, data, playerId);
+        }
+
+        internal static void SendPlayerHealth(ushort recipientId, ushort playerId, ushort masks, ushort maxHealth, ushort blueMasks, bool lifebloodState)
+        {
+            var data = new Packets.Packets.PlayerHealthPacket
+            {
+                PlayerId = playerId,
+                Masks = masks,
+                MaxHealth = maxHealth,
+                BlueMasks = blueMasks,
+                LifebloodState = lifebloodState
+            };
+
+            sender.SendSingleData(PacketIDs.PlayerHealth, data, recipientId);
+        }
     }
 }

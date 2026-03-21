@@ -16,7 +16,6 @@ namespace SSMPUtils.Client.Modules.Patches
         {
             if (Spectate.FollowedPlayer != null && collision.gameObject == Spectate.FollowedPlayer)
             {
-                Log.LogInfo("Trigger entered");
                 __instance.Entered();
                 return false;
             }
@@ -30,7 +29,6 @@ namespace SSMPUtils.Client.Modules.Patches
         {
             if (Spectate.FollowedPlayer != null && collision.gameObject == Spectate.FollowedPlayer)
             {
-                Log.LogInfo("Trigger exited");
                 __instance.Exited(false);
                 return false;
             }

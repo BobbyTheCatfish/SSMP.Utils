@@ -1,4 +1,5 @@
-﻿using SSMPUtils.Client.Modules;
+﻿using InControl;
+using SSMPUtils.Client.Modules;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,20 +10,32 @@ namespace SSMPUtils.Utils
     internal static class Inputs
     {
 
+        static float MovementAmount(PlayerAction action, PlayerAction inverseAction)
+        {
+            var deadZone = 0.1f;
+            if (action.Value > deadZone)
+            {
+                return action.Value;
+            }
+            else if (inverseAction > deadZone)
+            {
+                return 0 - inverseAction.Value;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         static void FreecamMovement()
         {
-            var distance = 0.1f;
+            var distance = 6f;
             var controller = InputHandler.Instance.inputActions;
+            
+            if (controller.Dash.IsPressed) distance = 2f;
 
-            if (controller.Dash.IsPressed) distance *= 4;
-
-            if (controller.Left.IsPressed) Spectate.FreecamMovementVector.x = 0 - distance;
-            else if (controller.Right.IsPressed) Spectate.FreecamMovementVector.x = distance;
-            else Spectate.FreecamMovementVector.x = 0;
-
-            if (controller.Down.IsPressed) Spectate.FreecamMovementVector.y = 0 - distance;
-            else if (controller.Up.IsPressed) Spectate.FreecamMovementVector.y = distance;
-            else Spectate.FreecamMovementVector.y = 0;
+            Spectate.FreecamMovementVector.x = MovementAmount(controller.Right, controller.Left) / distance;
+            Spectate.FreecamMovementVector.y = MovementAmount(controller.Up, controller.Down) / distance;
         }
         public static void Update()
         {

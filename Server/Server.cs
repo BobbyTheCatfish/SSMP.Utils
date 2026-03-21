@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using SSMP.Api.Server;
+using SSMPUtils.Data;
 using SSMPUtils.Utils;
 
 namespace SSMPUtils.Server
@@ -22,6 +23,8 @@ namespace SSMPUtils.Server
             instance = this;
             api = serverApi;
 
+            serverApi.ServerManager.PlayerConnectEvent += SendJoinInfo;
+
             PacketReceiver.Init();
             PacketSender.Init();
             Log.LogInfo("Utils Server Initialized");
@@ -37,5 +40,13 @@ namespace SSMPUtils.Server
             api.ServerManager.SendMessage(id, message);
         }
 
+        static void SendJoinInfo(IServerPlayer player)
+        {
+            var data = PlayerDataTracker.ServerInstance.GetAllData();
+            foreach (var p in data)
+            {
+                PacketSender.SendPlayerHealth(player.Id, p.Id, (ushort)p.health, (ushort)p.maxHealth, (ushort)p.blueMasks, p.lifebloodState);
+            }
+        }
     }
 }

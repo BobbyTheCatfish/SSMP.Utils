@@ -40,7 +40,7 @@ namespace SSMPUtils.Utils
             hero.RegainControl();
         }
 
-        public static string TextColor(string text,  Colors color)
+        public static string GlobalTextColor(string text, Colors color)
         {
             var colorStr = color switch
             {
@@ -58,31 +58,63 @@ namespace SSMPUtils.Utils
             return $"{colorStr}{text}&r";
         }
 
+        public static string LocalTextColor(string text, Colors color)
+        {
+            var colorStr = color switch
+            {
+                Colors.White => "#FFFFFF",
+                Colors.Black => "#000000",
+                Colors.Orange => "#FFAA00",
+                Colors.Purple => "#AA00AA",
+                Colors.Blue => "#55FFFF",
+                Colors.Green => "#00AA00",
+                Colors.Red => "#AA0000",
+                Colors.Yellow => "#FFFF55",
+                _ => "#FFFFFF"
+            };
+
+            return $"<color={colorStr}>{text}</color>";
+        }
+
         public static string ColoredUsername(IServerPlayer? player, Colors defaultColor = Colors.White)
         {
-            if (player == null) return TextColor("Unknown Player", defaultColor);
+            if (player == null) return GlobalTextColor("Unknown Player", defaultColor);
 
             var username = player.Username;
-            return ColoredUsername(username, player.Team, defaultColor);
+            return player.Team switch
+            {
+                Team.Lifeblood => GlobalTextColor(username, Colors.Blue),
+                Team.Moss => GlobalTextColor(username, Colors.Green),
+                Team.Grimm => GlobalTextColor(username, Colors.Red),
+                Team.Hive => GlobalTextColor(username, Colors.Orange),
+                _ => GlobalTextColor(username, defaultColor),
+            };
         }
 
         public static string ColoredUsername(IClientPlayer? player, Colors defaultColor = Colors.White)
         {
-            if (player == null) return TextColor("Unknown Player", defaultColor);
+            if (player == null) return GlobalTextColor("Unknown Player", defaultColor);
 
             var username = player.Username;
-            return ColoredUsername(username, player.Team, defaultColor);
+            return player.Team switch
+            {
+                Team.Lifeblood => LocalTextColor(username, Colors.Blue),
+                Team.Moss => LocalTextColor(username, Colors.Green),
+                Team.Grimm => LocalTextColor(username, Colors.Red),
+                Team.Hive => LocalTextColor(username, Colors.Orange),
+                _ => LocalTextColor(username, defaultColor),
+            };
         }
 
         static string ColoredUsername(string username, Team team, Colors defaultColor)
         {
             return team switch
             {
-                Team.Lifeblood => TextColor(username, Colors.Blue),
-                Team.Moss => TextColor(username, Colors.Green),
-                Team.Grimm => TextColor(username, Colors.Red),
-                Team.Hive => TextColor(username, Colors.Orange),
-                _ => TextColor(username, defaultColor),
+                Team.Lifeblood => GlobalTextColor(username, Colors.Blue),
+                Team.Moss => GlobalTextColor(username, Colors.Green),
+                Team.Grimm => GlobalTextColor(username, Colors.Red),
+                Team.Hive => GlobalTextColor(username, Colors.Orange),
+                _ => GlobalTextColor(username, defaultColor),
             };
         }
     }
