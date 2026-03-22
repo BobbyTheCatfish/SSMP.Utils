@@ -34,14 +34,24 @@ namespace SSMPUtils.Data
     internal class StoredPlayerData
     {
         public ushort Id;
-        public int health = 5;
-        public int maxHealth = 5;
-        public int blueMasks = 0;
-        public bool lifebloodState = false;
+        public HealthData Health = new();
 
         public StoredPlayerData(ushort id)
         {
             Id = id;
+        }
+    }
+
+    public class HealthData
+    {
+        public int Health = 5;
+        public int MaxHealth = 5;
+        public int BlueHealth = 0;
+        public bool LifebloodState = false;
+
+        public override string ToString()
+        {
+            return $"{Health}/{MaxHealth} + {BlueHealth} ({LifebloodState})";
         }
     }
 }

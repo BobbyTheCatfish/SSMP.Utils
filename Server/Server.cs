@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SSMP.Api.Server;
-using SSMPUtils.Data;
+﻿using SSMP.Api.Server;
+using SSMPUtils.Server.Commands;
+using SSMPUtils.Server.Modules;
 using SSMPUtils.Utils;
 
 namespace SSMPUtils.Server
@@ -18,6 +16,8 @@ namespace SSMPUtils.Server
 
         internal static Server instance;
 
+        internal static ServerSettings ServerSettings = new(false);
+
         public override void Initialize(IServerApi serverApi)
         {
             instance = this;
@@ -25,6 +25,9 @@ namespace SSMPUtils.Server
 
             serverApi.ServerManager.PlayerConnectEvent += SendJoinInfo;
 
+            serverApi.CommandManager.RegisterCommand(new SettingsCommand());
+
+            ServerSettings.ReadFromFile();
             PacketReceiver.Init();
             PacketSender.Init();
             Log.LogInfo("Utils Server Initialized");
@@ -40,13 +43,15 @@ namespace SSMPUtils.Server
             api.ServerManager.SendMessage(id, message);
         }
 
+        public static void BroadcastMessage(string message)
+        {
+            api.ServerManager.BroadcastMessage(message);
+        }
+
         static void SendJoinInfo(IServerPlayer player)
         {
-            var data = PlayerDataTracker.ServerInstance.GetAllData();
-            foreach (var p in data)
-            {
-                PacketSender.SendPlayerHealth(player.Id, p.Id, (ushort)p.health, (ushort)p.maxHealth, (ushort)p.blueMasks, p.lifebloodState);
-            }
+            PacketSender.SendSettingsUpdate(player.Id);
+            PacketSender.SendAllPlayerHealth(player.Id);
         }
     }
 }

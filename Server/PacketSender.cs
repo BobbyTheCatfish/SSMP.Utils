@@ -1,6 +1,6 @@
 ﻿using SSMP.Api.Server.Networking;
 using SSMP.Math;
-using SSMP.Networking.Packet;
+using SSMPUtils.Data;
 using SSMPUtils.Utils;
 
 namespace SSMPUtils.Server
@@ -13,22 +13,27 @@ namespace SSMPUtils.Server
             sender = Server.api.NetServer.GetNetworkSender<PacketIDs>(Server.instance);
         }
 
-        static void Broadcast(PacketIDs id, IPacketData packet, ushort senderId)
+        static void Broadcast(PacketIDs id, Packet packet, ushort senderId, bool collection = true)
         {
             var players = Server.api.ServerManager.Players;
             foreach (var player in players)
             {
-                sender.SendSingleData(id, packet, player.Id);
+                if (player.Id == senderId) continue;
+
+                if (collection) sender.SendCollectionData(id, packet, player.Id);
+                else sender.SendSingleData(id, packet, player.Id);
             }
         }
 
-        internal static void BroadcastWarp(string scene, Vector2 position, ushort senderId)
+        internal static void BroadcastWarp(string scene, Vector2 position, ushort destinationPlayerId)
         {
-            Broadcast(PacketIDs.Huddle, new Client.Packets.TeleportPacket
+            var data = new Client.Packets.TeleportPacket
             {
                 Scene = scene,
                 Position = position
-            }, senderId);
+            };
+
+            Broadcast(PacketIDs.Huddle, data, destinationPlayerId, false);
         }
 
         internal static void SendTeleportRequest(ushort targetPlayerId, ushort senderId)
@@ -38,7 +43,7 @@ namespace SSMPUtils.Server
                 PlayerId = senderId
             };
 
-            sender.SendSingleData(PacketIDs.TeleportRequest, data, targetPlayerId);
+            sender.SendCollectionData(PacketIDs.TeleportRequest, data, targetPlayerId);
         }
 
         internal static void SendTeleportAccepted(ushort playerToTeleportId, string scene,  Vector2 position)
@@ -61,35 +66,53 @@ namespace SSMPUtils.Server
                 PlayerId = senderId
             };
 
-            sender.SendSingleData(PacketIDs.Message, data, recipientId);
+            sender.SendCollectionData(PacketIDs.Message, data, recipientId);
         }
 
-        internal static void BroadcastPlayerHealth(ushort playerId, ushort masks, ushort maxHealth, ushort blueMasks, bool lifebloodState)
+        internal static void BroadcastPlayerHealth(ushort playerId, HealthData health)
         {
-            var data = new Packets.Packets.PlayerHealthPacket
+            Log.LogInfo(health);
+            var data = new Packets.PlayerHealthPacket
             {
                 PlayerId = playerId,
-                Masks = masks,
-                MaxHealth = maxHealth,
-                BlueMasks = blueMasks,
-                LifebloodState = lifebloodState
+                Health = health
             };
 
-            Broadcast(PacketIDs.PlayerHealth, data, playerId);
+            Broadcast(PacketIDs.PlayerHealth, data, playerId, true);
         }
 
-        internal static void SendPlayerHealth(ushort recipientId, ushort playerId, ushort masks, ushort maxHealth, ushort blueMasks, bool lifebloodState)
+        internal static void SendAllPlayerHealth(ushort recipientId)
         {
-            var data = new Packets.Packets.PlayerHealthPacket
+            foreach (var player in PlayerDataTracker.ServerInstance.GetAllData())
             {
-                PlayerId = playerId,
-                Masks = masks,
-                MaxHealth = maxHealth,
-                BlueMasks = blueMasks,
-                LifebloodState = lifebloodState
+                var data = new Packets.PlayerHealthPacket
+                {
+                    PlayerId = player.Id,
+                    Health = player.Health
+                };
+
+                sender.SendCollectionData(PacketIDs.PlayerHealth, data, recipientId);
+            }
+        }
+
+        internal static void BroadcastSettingsUpdate()
+        {
+            var data = new Packets.SettingsPacket
+            {
+                ServerSettings = Server.ServerSettings
             };
 
-            sender.SendSingleData(PacketIDs.PlayerHealth, data, recipientId);
+            sender.BroadcastSingleData(PacketIDs.Settings, data);
+        }
+
+        internal static void SendSettingsUpdate(ushort id)
+        {
+            var data = new Packets.SettingsPacket
+            {
+                ServerSettings = Server.ServerSettings
+            };
+
+            sender.SendSingleData(PacketIDs.Settings, data, id);
         }
     }
 }

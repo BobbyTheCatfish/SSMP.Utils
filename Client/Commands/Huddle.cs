@@ -1,10 +1,5 @@
 ﻿using SSMP.Api.Command.Client;
-using SSMP.Api.Command.Server;
-using SSMPUtils.Client.Modules;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SSMPUtils.Client.Commands
 {

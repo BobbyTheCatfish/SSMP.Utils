@@ -1,27 +1,24 @@
 ﻿using SSMP.Math;
 using SSMP.Networking.Packet;
+using SSMPUtils.Data;
 using SSMPUtils.Utils;
-using System;
 
 namespace SSMPUtils.Client.Packets
 {
-    internal class TeleportPacket : IPacketData
-    {
-        public bool IsReliable => true;
-        public bool DropReliableDataIfNewerExists => true;
-        
+    internal class TeleportPacket : Packet
+    {        
         public ushort PlayerId;
         public string Scene = "";
         public Vector2 Position = Vector2.Zero;
 
-        public void WriteData(IPacket packet)
+        public override void WriteData(IPacket packet)
         {
             packet.Write(PlayerId);
             packet.Write(Scene);
             packet.Write(Position);
         }
 
-        public void ReadData(IPacket packet)
+        public override void ReadData(IPacket packet)
         {
             PlayerId = packet.ReadUShort();
             Scene = packet.ReadString();
@@ -94,29 +91,25 @@ namespace SSMPUtils.Client.Packets
         }
     }
 
-    public class HealthPacket : IPacketData
+    public class HealthPacket : Packet
     {
-        public bool IsReliable => true;
-        public virtual bool DropReliableDataIfNewerExists => true;
-
-        public ushort Masks;
-        public ushort MaxHealth;
-        public ushort BlueMasks;
-        public bool LifebloodState;
-        public virtual void WriteData(IPacket packet)
+        public HealthData Health;
+        public override void WriteData(IPacket packet)
         {
-            packet.Write(Masks);
-            packet.Write(MaxHealth);
-            packet.Write(BlueMasks);
-            packet.Write(LifebloodState);
+            packet.Write(Health.Health);
+            packet.Write(Health.MaxHealth);
+            packet.Write(Health.BlueHealth);
+            packet.Write(Health.LifebloodState);
         }
 
-        public virtual void ReadData(IPacket packet)
+        public override void ReadData(IPacket packet)
         {
-            Masks = packet.ReadUShort();
-            MaxHealth = packet.ReadUShort();
-            BlueMasks = packet.ReadUShort();
-            LifebloodState = packet.ReadBool();
+            Health = new HealthData();
+
+            Health.Health = packet.ReadInt();
+            Health.MaxHealth = packet.ReadInt();
+            Health.BlueHealth = packet.ReadInt();
+            Health.LifebloodState = packet.ReadBool();
         }
     }
     public static class Packets
@@ -131,7 +124,7 @@ namespace SSMPUtils.Client.Packets
                 PacketIDs.Message => new MessagePacket(),
                 PacketIDs.PlayerDeath => new DeathPacket(),
                 PacketIDs.PlayerHealth => new HealthPacket(),
-                _ => throw new NotImplementedException()
+                _ => new Server.Packets.Packets.ErrorThrowingPacket(packetID, false)
             };
         }
     }

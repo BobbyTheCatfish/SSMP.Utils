@@ -2,6 +2,7 @@
 using SSMP.Api.Client.Networking;
 using SSMPUtils.Client.Modules;
 using SSMPUtils.Client.Packets;
+using SSMPUtils.Data;
 using SSMPUtils.Utils;
 using System;
 using System.Collections.Generic;
@@ -116,15 +117,13 @@ namespace SSMPUtils.Client
             sender.SendSingleData(PacketIDs.PlayerDeath, data);
         }
 
-        internal static void SendHealth(int masks, int maxMasks, int blueMasks, bool lifebloodState)
+        internal static void SendHealth(HealthData healthData)
         {
-            Log.LogInfo("Sending health");
+            Log.LogInfo($"Sending health: {healthData}");
+
             var data = new HealthPacket
             {
-                Masks = (ushort)masks,
-                MaxHealth = (ushort)maxMasks,
-                BlueMasks = (ushort)blueMasks,
-                LifebloodState = lifebloodState
+                Health = healthData
             };
 
             sender.SendSingleData(PacketIDs.PlayerHealth, data);

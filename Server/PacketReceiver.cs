@@ -32,6 +32,13 @@ namespace SSMPUtils.Server
 
         public static void OnHuddle(ushort id, TeleportPacket data)
         {
+            // Check if disabled
+            if (!Server.ServerSettings.HuddleEnabled)
+            {
+                Server.SendMessageToPlayer(id, "Huddles are currently disabled.");
+                return;
+            }
+
             // Check if authorized
             var player = Server.GetPlayer(id);
             if (player == null || !player.IsAuthorized)
@@ -63,6 +70,13 @@ namespace SSMPUtils.Server
 
         public static void OnTeleportRequest(ushort id, TeleportRequestPacket data)
         {
+            // Check if disabled
+            if (!Server.ServerSettings.TeleportsEnabled)
+            {
+                Server.SendMessageToPlayer(id, "Teleporting is currently disabled.");
+                return;
+            }
+
             var targetPlayer = Server.GetPlayer(data.PlayerId);
             if (targetPlayer == null)
             {
@@ -75,6 +89,13 @@ namespace SSMPUtils.Server
 
         public static void OnTeleportRequestAccept(ushort id, TeleportPacket data)
         {
+            // Check if disabled
+            if (!Server.ServerSettings.TeleportsEnabled)
+            {
+                Server.SendMessageToPlayer(id, "Teleporting is currently disabled.");
+                return;
+            }
+
             var playerToTeleport = Server.GetPlayer(data.PlayerId);
             if (playerToTeleport == null)
             {
@@ -99,6 +120,9 @@ namespace SSMPUtils.Server
 
         public static void OnPlayerDeath(ushort id, DeathPacket data)
         {
+            // Check if disabled
+            if (!Server.ServerSettings.DeathMessagesEnabled) return;
+
             var player = Server.GetPlayer(id);
             if (player == null) return;
 
@@ -131,13 +155,11 @@ namespace SSMPUtils.Server
 
         static void OnPlayerHealth(ushort id, HealthPacket data)
         {
-            Log.LogInfo($"Received health from {id}");
-            var player = PlayerDataTracker.ServerInstance.GetPlayer(id);
-            player.health = data.Masks;
-            player.maxHealth = data.MaxHealth;
-            player.blueMasks = data.BlueMasks;
+            Log.LogInfo($"Received health from {id}: {data.Health}");
+            var health = PlayerDataTracker.ServerInstance.GetPlayer(id);
+            health.Health = data.Health;
 
-            PacketSender.BroadcastPlayerHealth(id, data.Masks, data.MaxHealth, data.BlueMasks, data.LifebloodState);
+            PacketSender.BroadcastPlayerHealth(id, health.Health);
         }
     }
 }

@@ -19,6 +19,8 @@ namespace SSMPUtils.Client.Modules
 
         public static void OnDeath()
         {
+            if (!Client.ServerSettings.DeathMessagesEnabled) return;
+
             var ranAway = false;
             if (PlayerAttackTime.AddSeconds(15) > DateTime.Now)
             {

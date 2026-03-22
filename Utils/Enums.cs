@@ -11,7 +11,8 @@ namespace SSMPUtils.Utils
         TeleportAccept,
         Message,
         PlayerDeath,
-        PlayerHealth
+        PlayerHealth,
+        Settings
     }
 
     internal enum Messages

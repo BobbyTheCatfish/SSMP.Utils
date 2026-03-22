@@ -1,11 +1,10 @@
 ﻿using SSMP.Api.Client.Networking;
 using SSMPUtils.Utils;
 using SSMPUtils.Server.Packets;
+using SSMPUtils.Client.Packets;
 using SSMPUtils.Client.Modules;
 using UnityEngine;
-using SSMPUtils.Client.Packets;
 using System;
-using static SSMPUtils.Server.Packets.Packets;
 
 namespace SSMPUtils.Client
 {
@@ -20,6 +19,7 @@ namespace SSMPUtils.Client
             receiver.RegisterPacketHandler<TeleportPacket>(PacketIDs.TeleportAccept, OnTeleportAccepted);
             receiver.RegisterPacketHandler<MessagePacket>(PacketIDs.Message, OnMessage);
             receiver.RegisterPacketHandler<PlayerHealthPacket>(PacketIDs.PlayerHealth, OnHealth);
+            receiver.RegisterPacketHandler<SettingsPacket>(PacketIDs.Settings, OnSettings);
         }
 
         public static void OnHuddle(TeleportPacket data)
@@ -30,7 +30,7 @@ namespace SSMPUtils.Client
 
         public static void OnTeleportRequest(TeleportRequestPacket data)
         {
-            var player = Client.api.ClientManager.GetPlayer(data.PlayerId);
+            var player = Client.GetPlayer(data.PlayerId);
             if (player == null)
             {
                 Client.LocalChat("Received teleport request from unknown player. Ignoring.");
@@ -42,14 +42,16 @@ namespace SSMPUtils.Client
 
         public static void OnTeleportAccepted(TeleportPacket data)
         {
-            Client.LocalChat("Teleport request accepted. Teleporting now...");
+            var player = Client.GetPlayer(data.PlayerId);
+            Client.LocalChat($"Teleport request accepted. Teleporting to {Common.ColoredUsername(player)} now...");
+
             var teleportWarp = new Warp(data.Scene, (Vector2)data.Position);
             teleportWarp.WarpToPosition();
         }
 
         public static void OnMessage(MessagePacket data)
         {
-            var player = Client.api.ClientManager.GetPlayer(data.PlayerId);
+            var player = Client.GetPlayer(data.PlayerId);
             var message = data.Message switch
             {
                 Messages.TeleportDenied => $"{Common.ColoredUsername(player)} denied your teleport request.",
@@ -61,10 +63,16 @@ namespace SSMPUtils.Client
 
         public static void OnHealth(PlayerHealthPacket data)
         {
-            var player = Client.api.ClientManager.GetPlayer(data.PlayerId);
+            var player = Client.GetPlayer(data.PlayerId);
             if (player == null) return;
 
-            PlayerHealth.SetPlayerHealth(player, data.Masks, data.MaxHealth, data.BlueMasks, data.LifebloodState);
+            PlayerHealth.SetPlayerHealth(player, data.Health);
+        }
+
+        public static void OnSettings(SettingsPacket data)
+        {
+            Client.ServerSettings = data.ServerSettings;
+            Client.OnServerSettingsUpdate.Invoke();
         }
     }
 }

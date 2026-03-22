@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using UnityEngine;
-using SSMP.Game;
+﻿using SSMP.Api.Client;
 using SSMP.Api.Server;
-using SSMP.Api.Client;
+using SSMP.Game;
+using SSMP.Networking.Packet;
+using System.Collections;
+using UnityEngine;
 
 namespace SSMPUtils.Utils
 {
@@ -116,6 +117,21 @@ namespace SSMPUtils.Utils
                 Team.Hive => GlobalTextColor(username, Colors.Orange),
                 _ => GlobalTextColor(username, defaultColor),
             };
+        }
+    }
+
+    public class Packet : IPacketData
+    {
+        public virtual bool IsReliable => true;
+        public virtual bool DropReliableDataIfNewerExists => true;
+
+        public virtual void WriteData(IPacket packet)
+        {
+            Log.LogInfo("THIS SHOULD NOT RUN");
+        }
+        public virtual void ReadData(IPacket packet)
+        {
+            Log.LogInfo("THIS SHOULD NOT RUN");
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using SSMP.Api.Client;
 using SSMPUtils.Client.Commands;
 using SSMPUtils.Client.Modules;
+using SSMPUtils.Server.Modules;
 using SSMPUtils.Utils;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
-using System.Text;
+using UnityEngine;
 
 namespace SSMPUtils.Client
 {
@@ -19,6 +20,10 @@ namespace SSMPUtils.Client
         internal static IClientApi api;
 
         internal static Client instance;
+
+        internal static ServerSettings ServerSettings = new(true);
+
+        internal static Action OnServerSettingsUpdate = () => { };
 
         public override void Initialize(IClientApi clientApi)
         {
@@ -34,7 +39,7 @@ namespace SSMPUtils.Client
             api.CommandManager.RegisterCommand(new TeleportDeny());
 
             api.ClientManager.DisconnectEvent += () => Spectate.ReturnToSelf();
-            api.ClientManager.PlayerEnterSceneEvent += PlayerHealth.OnPlayerJoin;
+            api.ClientManager.PlayerEnterSceneEvent += PlayerHealth.OnPlayerEnter;
 
             Spectate.Init();
 
@@ -44,16 +49,29 @@ namespace SSMPUtils.Client
 
         public static void LocalChat(string message)
         {
+            SSMPUtilsPlugin.instance.StartCoroutine(LocalChatDelayed(message));
+        }
+
+        static IEnumerator LocalChatDelayed(string message)
+        {
+            yield return new WaitForSeconds(0.5f);
             api.UiManager.ChatBox.AddMessage(message);
+
+            yield break;
         }
 
         public static IClientPlayer? GetPlayerByName(string username)
         {
             // Try to find player
-            var players = Client.api.ClientManager.Players;
+            var players = api.ClientManager.Players;
             var foundPlayer = players.FirstOrDefault(p => p.Username.Equals(username, StringComparison.CurrentCultureIgnoreCase));
 
             return foundPlayer;
+        }
+
+        public static IClientPlayer? GetPlayer(ushort id)
+        {
+            return api.ClientManager.GetPlayer(id);
         }
     }
 }

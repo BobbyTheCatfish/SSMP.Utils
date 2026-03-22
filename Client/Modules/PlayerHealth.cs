@@ -1,11 +1,9 @@
 ﻿using GlobalEnums;
-using HutongGames.PlayMaker.Ecosystem.Utils;
 using SSMP.Api.Client;
 using SSMPUtils.Data;
 using SSMPUtils.Utils;
 using System;
 using System.Linq;
-using ToJ;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -25,11 +23,15 @@ namespace SSMPUtils.Client.Modules
         {
             var hc = HeroController.instance.playerData;
 
-            var masks = hc.health;
-            var maxHealth = hc.CurrentMaxHealth;
-            var blueMasks = hc.healthBlue;
-            var lifebloodState = HeroController.instance.IsInLifebloodState;
-            PacketSender.SendHealth(masks, maxHealth, blueMasks, lifebloodState);
+            var data = new HealthData
+            {
+                Health = hc.health,
+                MaxHealth = hc.maxHealth,
+                BlueHealth = hc.healthBlue,
+                LifebloodState = HeroController.instance.IsInLifebloodState
+            };
+            
+            PacketSender.SendHealth(data);
         }
 
         public static void BlueHealthAddListener()
@@ -46,7 +48,7 @@ namespace SSMPUtils.Client.Modules
             }
         }
 
-        public static void OnPlayerJoin(IClientPlayer player)
+        public static void OnPlayerEnter(IClientPlayer player)
         {
             var container = player.PlayerContainer;
             if (container == null) return;
@@ -55,18 +57,17 @@ namespace SSMPUtils.Client.Modules
             healthDisplay.Refresh();
         }
 
-        public static void SetPlayerHealth(IClientPlayer player, ushort health, ushort maxHealth, ushort blueMasks, bool lifebloodState)
+        public static void SetPlayerHealth(IClientPlayer player, HealthData healthData)
         {
-            var clampedMasks = Math.Min((int)health, MAX_HEALTH);
-            var clampedMax = Math.Min((int)maxHealth, MAX_HEALTH);
-            var clampedBlue = Math.Min((int)blueMasks, MAX_HEALTH);
+            var clampedHealth = Math.Clamp(healthData.Health, 0, 10);
+            var clampedMax = Math.Clamp(healthData.MaxHealth, 0, 10);
+            var clampedBlue = Math.Clamp(healthData.BlueHealth, 0, 8);
 
-            var data = PlayerDataTracker.ClientInstance.GetPlayer(player.Id);
-            data.health = clampedMasks;
-            data.maxHealth = clampedMax;
-            data.blueMasks = clampedBlue;
-            data.lifebloodState = lifebloodState;
-
+            var health = PlayerDataTracker.ClientInstance.GetPlayer(player.Id).Health;
+            health.Health = clampedHealth;
+            health.MaxHealth = clampedMax;
+            health.BlueHealth = clampedBlue;
+            health.LifebloodState = healthData.LifebloodState;
 
             var playerContainer = player.PlayerContainer;
 
@@ -81,12 +82,16 @@ namespace SSMPUtils.Client.Modules
             var display = playerContainer.GetComponentInChildren<HealthDisplay>();
             if (display == null)
             {
+                Log.LogInfo("Creating display");
                 var displayGameObject = new GameObject("Player Health Display");
                 displayGameObject.transform.SetParentReset(playerContainer.transform);
 
                 display = displayGameObject.AddComponent<HealthDisplay>();
             }
-            
+            else
+            {
+                Log.LogInfo("Display found");
+            }
             display.Owner = id;
             return display;
         }
@@ -179,28 +184,42 @@ namespace SSMPUtils.Client.Modules
     public class HealthDisplay : MonoBehaviour
     {
         public ushort Owner;
-        public int Health = 5;
-        public int MaxHealth = 5;
-        public int BlueMasks = 0;
-        public bool LifebloodState = false;
+        public HealthData Health = new();
 
         void Awake()
         {
             Log.LogInfo("Health display awoke");
             transform.Reset();
             PlayerHealth.CreateHealthBar(gameObject);
+            Client.OnServerSettingsUpdate += OnSettingsChange;
+            OnSettingsChange();
+        }
+
+        void OnSettingsChange()
+        {
+            if (!gameObject.transform.parent.gameObject.activeInHierarchy) return;
+
+            if (Client.ServerSettings.HealthbarsEnabled)
+            {
+                Log.LogInfo("Settings changed, enabling");
+                gameObject.SetActive(true);
+                Refresh();
+            }
+            else
+            {
+                Log.LogInfo("Settings changed, disabling");
+                gameObject.SetActive(false);
+            }
         }
 
         public void Refresh()
         {
             var data = PlayerDataTracker.ClientInstance.GetPlayer(Owner);
-            Health = data.health;
-            MaxHealth = data.maxHealth;
-            BlueMasks = data.blueMasks;
-            LifebloodState = data.lifebloodState;
+            Health = data.Health;
 
-            var totalHealth = MaxHealth + BlueMasks;
-            Log.LogInfo(Health, MaxHealth, BlueMasks, totalHealth);
+            var totalHealth = Health.MaxHealth + Health.BlueHealth;
+            Log.LogInfo($"Updating health: {Health}");
+
             for (int i = 0; i < PlayerHealth.MAX_HEALTH; i++)
             {
                 var child = transform.GetChild(i);
@@ -215,14 +234,16 @@ namespace SSMPUtils.Client.Modules
 
                 var renderer = child.GetComponent<tk2dSprite>();
 
-                if (healthNum <= Health)
+                if (healthNum <= Health.Health)
                 {
-                    if (LifebloodState) renderer.SetSprite(PlayerHealth.BLUE_MASK_ID);
+                    if (Health.LifebloodState) renderer.SetSprite(PlayerHealth.BLUE_MASK_ID);
                     else renderer.SetSprite(PlayerHealth.NORMAL_MASK_ID);
                 }
-                else if (healthNum <= MaxHealth) renderer.SetSprite(PlayerHealth.MISSING_MASK_ID);
+                else if (healthNum <= Health.MaxHealth) renderer.SetSprite(PlayerHealth.MISSING_MASK_ID);
                 else renderer.SetSprite(PlayerHealth.BLUE_MASK_ID);
             }
+
+            gameObject.SetActive(Client.ServerSettings.HealthbarsEnabled);
         }
     }
 }
