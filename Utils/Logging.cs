@@ -1,51 +1,60 @@
-﻿using BepInEx.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SSMP.Logging;
 
 namespace SSMPUtils.Utils
 {
     internal static class Log
     {
-        static ManualLogSource logger;
-        public static void SetLogger(ManualLogSource log)
+        static ILogger logger;
+        public static void SetLogger(ILogger log)
         {
             logger = log;
 
 #if DEBUG
-            //FilteredLogs.API.ApplyFilter("SSMPUtils");
+            //FilteredLogs.API.ApplyFilter(ShouldLog);
 #endif
+        }
+
+        private static bool ShouldLog(BepInEx.Logging.LogEventArgs log)
+        {
+            //Debug.Log(log.Data);
+            //return true;
+            if (log.Source.SourceName == "SSMP" && log.Data is string data)
+            {
+                if (data.StartsWith("[SSMPUtils")) return true;
+            }
+
+            return false;
         }
 
         public static void LogInfo(params object[] data)
         {
             foreach (object obj in data)
-                logger.LogInfo(obj);
+                logger.Info(obj.ToString());
         }
         public static void LogWarning(params object[] data)
         {
             foreach (object obj in data)
-                logger.LogWarning(obj);
+                logger.Warn(obj.ToString());
         }
         public static void LogError(params object[] data)
         {
             foreach (object obj in data)
-                logger.LogError(obj);
+                logger.Error(obj.ToString());
         }
         public static void LogFatal(params object[] data)
         {
             foreach (object obj in data)
-                logger.LogFatal(obj);
+                logger.Error(obj.ToString());
         }
         public static void LogDebug(params object[] data)
         {
             foreach (object obj in data)
-                logger.LogDebug(obj);
+                logger.Debug(obj.ToString());
         }
         public static void LogMessage(params object[] data)
         {
             foreach (object obj in data)
-                logger.LogMessage(obj);
+                logger.Message(obj.ToString());
         }
     }
 }
