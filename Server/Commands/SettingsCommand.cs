@@ -15,6 +15,8 @@ namespace SSMPUtils.Server.Commands
         const string TELEPORT_REQUEST_SETTING = "tprequests";
         const string DEATH_MESSAGES_SETTING = "deathmessages";
         const string HEALTHBAR_SETTING = "healthbars";
+        const string SPECTATE_SETTING = "spectate";
+        const string FREECAM_SETTING = "freecam";
 
         public void Execute(ICommandSender sender, string[] arguments)
         {
@@ -25,7 +27,7 @@ namespace SSMPUtils.Server.Commands
                 return;
             }
 
-            var validSettings = $"Valid settings are {HUDDLE_SETTING}, {TELEPORT_SETTING}, {TELEPORT_REQUEST_SETTING}, {DEATH_MESSAGES_SETTING}, {HEALTHBAR_SETTING}";
+            var validSettings = $"Valid settings are {HUDDLE_SETTING}, {TELEPORT_SETTING}, {TELEPORT_REQUEST_SETTING}, {DEATH_MESSAGES_SETTING}, {HEALTHBAR_SETTING}, {SPECTATE_SETTING}, {FREECAM_SETTING}";
             if (arguments.Length == 2)
             {
                 sender.SendMessage(validSettings);
@@ -74,6 +76,14 @@ namespace SSMPUtils.Server.Commands
                 case HEALTHBAR_SETTING:
                     Server.ServerSettings.HealthbarsEnabled = value;
                     Server.BroadcastMessage($"Healthbars are now {status}");
+                    break;
+                case SPECTATE_SETTING:
+                    Server.ServerSettings.SpectateEnabled = value;
+                    Server.BroadcastMessage($"Spectating is now {status}");
+                    break;
+                case FREECAM_SETTING:
+                    Server.ServerSettings.FreecamEnabled = value;
+                    Server.BroadcastMessage($"Freecam is now {status}");
                     break;
                 default:
                     sender.SendMessage(validSettings);

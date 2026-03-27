@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
 using SSMPUtils.Utils;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace SSMPUtils.Server.Modules
 {
@@ -15,6 +13,8 @@ namespace SSMPUtils.Server.Modules
         public bool TeleportsNeedRequests = true;
         public bool DeathMessagesEnabled = true;
         public bool HealthbarsEnabled = true;
+        public bool SpectateEnabled = true;
+        public bool FreecamEnabled = true;
 
         private static string Filepath()
         {
@@ -50,6 +50,8 @@ namespace SSMPUtils.Server.Modules
             SetSetting("TeleportsNeedRequests", ref TeleportsNeedRequests);
             SetSetting("DeathMessages", ref DeathMessagesEnabled);
             SetSetting("Healthbars", ref HealthbarsEnabled);
+            SetSetting("SpectateEnabled", ref SpectateEnabled);
+            SetSetting("FreecamEnabled", ref FreecamEnabled);
         }
 
         public void OnUpdate()
@@ -61,6 +63,8 @@ namespace SSMPUtils.Server.Modules
                 {"TeleportsNeedRequests", TeleportsNeedRequests},
                 {"DeathMessages", DeathMessagesEnabled},
                 {"Healthbars", HealthbarsEnabled},
+                {"SpectateEnabled", SpectateEnabled},
+                {"FreecamEnabled", FreecamEnabled },
             };
 
             var settings = JsonConvert.SerializeObject(dictForm, Formatting.Indented);
@@ -85,6 +89,8 @@ namespace SSMPUtils.Server.Modules
             TeleportsNeedRequests = !client;
             DeathMessagesEnabled = !client;
             HealthbarsEnabled = !client;
+            SpectateEnabled = !client;
+            FreecamEnabled = !client;
         }
     }
 }

@@ -39,6 +39,12 @@ namespace SSMPUtils.Client.Modules
             Client.api.ClientManager.PlayerLeaveSceneEvent += RemovePlayer;
             SceneManager.activeSceneChanged += (a, b) => ReturnToSelf(true);
             GameManager.instance.GamePausedChange += OnUnpause;
+
+            Client.OnServerSettingsUpdate += () =>
+            {
+                if (!Client.ServerSettings.FreecamEnabled && freecam) ReturnToSelf();
+                if (!Client.ServerSettings.SpectateEnabled && Following) ReturnToSelf();
+            };
         }
 
         public static void Unload()
@@ -50,6 +56,12 @@ namespace SSMPUtils.Client.Modules
         public static void FocusOnPlayer(MoveDir dir)
         {
             if (InScene.Count == 0) return;
+            if (!Client.ServerSettings.SpectateEnabled)
+            {
+                Client.LocalChat("Spectating is currently disabled.");
+                ReturnToSelf();
+                return;
+            }
 
             var prevIndex = FollowedPlayerIndex;
             EndPreviousMode();
@@ -203,6 +215,13 @@ namespace SSMPUtils.Client.Modules
         public static void Freecam()
         {
             if (freecam) return;
+            if (!Client.ServerSettings.FreecamEnabled)
+            {
+                Client.LocalChat("Freecam is currently disabled.");
+                ReturnToSelf();
+                return;
+            }
+
             EndPreviousMode();
             ToggleVignette(false);
 

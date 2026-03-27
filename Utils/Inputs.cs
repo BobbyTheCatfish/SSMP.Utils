@@ -1,8 +1,5 @@
 ﻿using InControl;
 using SSMPUtils.Client.Modules;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace SSMPUtils.Utils
@@ -39,6 +36,7 @@ namespace SSMPUtils.Utils
         }
         public static void Update()
         {
+            if (Client.Client.api.UiManager.ChatBox.IsOpen) return;
             if (Input.GetKeyDown(Config.SpectateNext)) Spectate.FocusOnPlayer(Spectate.MoveDir.Next);
             else if (Input.GetKeyDown(Config.SpectatePrevious)) Spectate.FocusOnPlayer(Spectate.MoveDir.Prev);
             else if (Input.GetKeyDown(Config.ExitSpectate)) Spectate.ReturnToSelf();

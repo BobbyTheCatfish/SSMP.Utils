@@ -38,6 +38,8 @@ namespace SSMPUtils.Server.Packets
             packet.Write(ServerSettings.TeleportsNeedRequests);
             packet.Write(ServerSettings.DeathMessagesEnabled);
             packet.Write(ServerSettings.HealthbarsEnabled);
+            packet.Write(ServerSettings.SpectateEnabled);
+            packet.Write(ServerSettings.FreecamEnabled);
         }
 
         public override void ReadData(IPacket packet)
@@ -48,7 +50,9 @@ namespace SSMPUtils.Server.Packets
                 TeleportsEnabled = packet.ReadBool(),
                 TeleportsNeedRequests = packet.ReadBool(),
                 DeathMessagesEnabled = packet.ReadBool(),
-                HealthbarsEnabled = packet.ReadBool()
+                HealthbarsEnabled = packet.ReadBool(),
+                SpectateEnabled = packet.ReadBool(),
+                FreecamEnabled = packet.ReadBool(),
             };
         }
     }
