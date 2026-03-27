@@ -53,6 +53,7 @@ namespace SSMPUtils.Client.Modules
 
             var prevIndex = FollowedPlayerIndex;
             EndPreviousMode();
+            ToggleVignette(false);
             FollowedPlayerIndex = prevIndex;
 
             if (dir == MoveDir.Prev)
@@ -140,6 +141,8 @@ namespace SSMPUtils.Client.Modules
             FollowedPlayerIndex = -1;
             FollowedPlayer = null;
             ToggleUpDownArrows(true);
+            ToggleVignette(true);
+
             GameManager.instance.cameraCtrl.camTarget.heroTransform = HeroController.instance.transform;
             FixMasks(HeroController.instance.gameObject);
         }
@@ -151,6 +154,7 @@ namespace SSMPUtils.Client.Modules
             FollowedPlayer = null;
             FreecamMovementVector = Vector2.zero;
             freecam = false;
+            ToggleVignette(true);
             if (HeroController.instance != null)
             {
                 RestoreControl();
@@ -164,6 +168,16 @@ namespace SSMPUtils.Client.Modules
             }
 
             if (arrows != null) arrows.SetActive(false);
+        }
+
+        static void ToggleVignette(bool status)
+        {
+            var hornet = HeroController.SilentInstance?.gameObject;
+            if (hornet != null)
+            {
+                var vignette = hornet.FindGameObjectInChildren("Vignette");
+                vignette?.SetActive(status);
+            }
         }
 
         static void FixMasks(GameObject playerObject)
@@ -190,6 +204,7 @@ namespace SSMPUtils.Client.Modules
         {
             if (freecam) return;
             EndPreviousMode();
+            ToggleVignette(false);
 
             freecam = true;
             ImmobilizePlayer();
@@ -233,6 +248,7 @@ namespace SSMPUtils.Client.Modules
 
         public static void ToggleUpDownArrows(bool status)
         {
+            if (arrows == null) return;
             arrows.transform.GetChild(0).gameObject.SetActive(status); // down
             arrows.transform.GetChild(3).gameObject.SetActive(status); // up
         }

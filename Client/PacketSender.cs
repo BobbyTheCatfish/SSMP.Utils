@@ -66,7 +66,7 @@ namespace SSMPUtils.Client
             }
 
             Log.LogDebug($"Sending huddle packet for user {id}");
-            SendDataSendData(PacketIDs.Huddle, new TeleportPacket
+            SendData(PacketIDs.Huddle, new TeleportPacket
             {
                 Scene = "",
                 Position = Vector2.Zero,
