@@ -1,5 +1,6 @@
 ﻿using SSMP.Api.Client;
 using SSMP.Api.Client.Networking;
+using SSMP.Networking.Packet;
 using SSMPUtils.Client.Modules;
 using SSMPUtils.Client.Packets;
 using SSMPUtils.Data;
@@ -22,6 +23,14 @@ namespace SSMPUtils.Client
             sender = Client.api.NetClient.GetNetworkSender<PacketIDs>(Client.instance);
         }
 
+        static void SendData(PacketIDs packetId, IPacketData data)
+        {
+            if (Client.api.NetClient.IsConnected && sender != null)
+            {
+                sender.SendSingleData(packetId, data);
+            }
+        }
+
         internal static void SendMessage(ushort id, Messages message)
         {
             var data = new MessagePacket
@@ -29,7 +38,7 @@ namespace SSMPUtils.Client
                 Message = message,
                 PlayerId = id,
             };
-            sender.SendSingleData(PacketIDs.Message, data);
+            SendData(PacketIDs.Message, data);
         }
 
         internal static void SendHuddle()
@@ -41,7 +50,7 @@ namespace SSMPUtils.Client
             }
 
             Log.LogDebug($"Sending huddle packet for scene {scene} at location {position}");
-            sender.SendSingleData(PacketIDs.Huddle, new TeleportPacket
+            SendData(PacketIDs.Huddle, new TeleportPacket
             {
                 Scene = scene,
                 Position = position,
@@ -57,7 +66,7 @@ namespace SSMPUtils.Client
             }
 
             Log.LogDebug($"Sending huddle packet for user {id}");
-            sender.SendSingleData(PacketIDs.Huddle, new TeleportPacket
+            SendDataSendData(PacketIDs.Huddle, new TeleportPacket
             {
                 Scene = "",
                 Position = Vector2.Zero,
@@ -76,7 +85,7 @@ namespace SSMPUtils.Client
             request.Responded = true;
 
             Log.LogDebug($"Sending teleport accept to {request.PlayerId}");
-            sender.SendSingleData(PacketIDs.TeleportAccept, new TeleportPacket
+            SendData(PacketIDs.TeleportAccept, new TeleportPacket
             {
                 Scene = scene,
                 Position = position,
@@ -91,7 +100,7 @@ namespace SSMPUtils.Client
                 PlayerId = playerId
             };
 
-            sender.SendSingleData(PacketIDs.TeleportRequest, data);
+            SendData(PacketIDs.TeleportRequest, data);
         }
 
         internal static void SendDeath(CauseOfDeath cause, ushort killerId = 0, bool ranAway = false)
@@ -114,7 +123,7 @@ namespace SSMPUtils.Client
                 RanAway = ranAway
             };
 
-            sender.SendSingleData(PacketIDs.PlayerDeath, data);
+            SendData(PacketIDs.PlayerDeath, data);
         }
 
         internal static void SendHealth(HealthData healthData)
@@ -126,7 +135,7 @@ namespace SSMPUtils.Client
                 Health = healthData
             };
 
-            sender.SendSingleData(PacketIDs.PlayerHealth, data);
+            SendData(PacketIDs.PlayerHealth, data);
         }
     }
 }

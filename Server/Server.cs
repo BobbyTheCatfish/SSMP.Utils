@@ -22,6 +22,7 @@ namespace SSMPUtils.Server
         {
             instance = this;
             api = serverApi;
+            Log.SetLogger(Logger);
 
             serverApi.ServerManager.PlayerConnectEvent += SendJoinInfo;
 
