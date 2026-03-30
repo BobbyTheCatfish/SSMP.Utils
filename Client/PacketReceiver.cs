@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using SSMP.Api.Client.Networking;
 using SSMPEssentials.Client.Modules;
 using SSMPEssentials.Client.Packets;
 using SSMPEssentials.Server.Packets;

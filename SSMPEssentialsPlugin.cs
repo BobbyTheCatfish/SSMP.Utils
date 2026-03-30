@@ -44,6 +44,7 @@ public partial class SSMPEssentialsPlugin : BaseUnityPlugin
         HeroController.OnHeroInstanceSet -= InitializeHCModules;
 
         Spectate.CreateFreecamUI();
+        PlayerDeaths.Init();
         controller.OnDeath += PlayerDeaths.OnDeath;
         PlayerHealth.BlueHealthAddListener();
     }

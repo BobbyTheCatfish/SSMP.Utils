@@ -15,24 +15,26 @@ namespace SSMPEssentials.Client.Modules
             Next
         }
 
-        static List<IClientPlayer> InScene = new();
-        static int FollowedPlayerIndex = -1;
+        private static readonly List<IClientPlayer> InScene = new();
+
         public static GameObject? FollowedPlayer;
-        static bool Following => FollowedPlayerIndex != -1;
+        private static int FollowedPlayerIndex = -1;
+        private static bool Following => FollowedPlayerIndex != -1;
 
         public static bool freecam = false;
 
         public static Vector2 FreecamMovementVector = Vector2.zero;
-        static GameObject? arrows;
-        static GameObject? LeftArrow;
-        static GameObject? RightArrow;
-        static GameObject? UpArrow;
-        static GameObject? DownArrow;
+        private static GameObject? arrows;
+        private static GameObject? LeftArrow;
+        private static GameObject? RightArrow;
+        private static GameObject? UpArrow;
+        private static GameObject? DownArrow;
 
         public static void Init()
         {
             Client.api.ClientManager.PlayerEnterSceneEvent += AddPlayer;
             Client.api.ClientManager.PlayerLeaveSceneEvent += RemovePlayer;
+            Client.api.ClientManager.PlayerDisconnectEvent += RemovePlayer;
             SceneManager.activeSceneChanged += (a, b) => ReturnToSelf(true);
             GameManager.instance.GamePausedChange += OnPauseChange;
 
@@ -126,7 +128,7 @@ namespace SSMPEssentials.Client.Modules
             //GameManager.instance.cameraCtrl.isGameplayScene = false;
         }
 
-        static void SetFreecamBoundsArrows(Vector2 position)
+        private static void SetFreecamBoundsArrows(Vector2 position)
         {
             var camera = GameManager.instance.cameraCtrl;
             const float grace = 0.2f;
@@ -141,7 +143,7 @@ namespace SSMPEssentials.Client.Modules
             if (UpArrow != null) UpArrow.SetActive(!up);
         }
 
-        public static void EndPreviousMode()
+        private static void EndPreviousMode()
         {
             FreecamMovementVector = Vector2.zero;
             freecam = false;
@@ -177,7 +179,7 @@ namespace SSMPEssentials.Client.Modules
             if (arrows != null) arrows.SetActive(false);
         }
 
-        static void ToggleVignette(bool status)
+        private static void ToggleVignette(bool status)
         {
             var hornet = HeroController.SilentInstance != null ? HeroController.SilentInstance.gameObject : null;
             if (hornet != null)
@@ -187,7 +189,7 @@ namespace SSMPEssentials.Client.Modules
             }
         }
 
-        static void FixMasks(GameObject playerObject)
+        private static void FixMasks(GameObject playerObject)
         {
             var masks = Resources.FindObjectsOfTypeAll<Remasker>();
             var hero = playerObject.GetComponent<Collider2D>();
@@ -227,13 +229,13 @@ namespace SSMPEssentials.Client.Modules
             ToggleUpDownArrows(true);
         }
 
-        static void ImmobilizePlayer()
+        private static void ImmobilizePlayer()
         {
             HeroController.instance.IgnoreInput();
             HeroController.instance.ResetMotion();
         }
 
-        static void RestoreControl()
+        private static void RestoreControl()
         {
             HeroController.instance.UnPauseInput();
             //GameManager.instance.cameraCtrl.isGameplayScene = true;
@@ -252,19 +254,19 @@ namespace SSMPEssentials.Client.Modules
             RightArrow = newArrows.transform.GetChild(2).gameObject;
             UpArrow = newArrows.transform.GetChild(3).gameObject;
 
-            DownArrow.transform.localPosition = new Vector3(0, -7.5f, 45); // down
-            LeftArrow.transform.localPosition = new Vector3(-13.5f, 0, 45); // left
-            RightArrow.transform.localPosition = new Vector3(13.5f, 0, 45); // right
-            UpArrow.transform.localPosition = new Vector3(0, 7.5f, 45); // up
+            DownArrow.transform.localPosition = new Vector3(0, -7.5f, 45);
+            LeftArrow.transform.localPosition = new Vector3(-13.5f, 0, 45);
+            RightArrow.transform.localPosition = new Vector3(13.5f, 0, 45);
+            UpArrow.transform.localPosition = new Vector3(0, 7.5f, 45);
 
             arrows = newArrows;
         }
 
-        public static void ToggleUpDownArrows(bool status)
+        private static void ToggleUpDownArrows(bool status)
         {
             if (arrows == null) return;
-            arrows.transform.GetChild(0).gameObject.SetActive(status); // down
-            arrows.transform.GetChild(3).gameObject.SetActive(status); // up
+            if (DownArrow) DownArrow.SetActive(status);
+            if (UpArrow) UpArrow.SetActive(status);
         }
 
         private static void OnPauseChange(bool isPaused)
@@ -273,7 +275,7 @@ namespace SSMPEssentials.Client.Modules
             if (freecam || Following) ReturnToSelf();
         }
 
-        static void AddPlayer(IClientPlayer player)
+        private static void AddPlayer(IClientPlayer player)
         {
             var exists = InScene.Any(p => p.Id == player.Id);
             if (exists) return;
@@ -281,7 +283,7 @@ namespace SSMPEssentials.Client.Modules
             InScene.Add(player);
         }
 
-        static void RemovePlayer(IClientPlayer player)
+        private static void RemovePlayer(IClientPlayer player)
         {
             var index = InScene.FindIndex(p => p.Id == player.Id);
             if (index == -1) return;
@@ -295,7 +297,7 @@ namespace SSMPEssentials.Client.Modules
             }    
         }
 
-        static List<IClientPlayer> GetPlayersInScene()
+        private static List<IClientPlayer> GetPlayersInScene()
         {
             var api = Client.api;
             var players = api.ClientManager.Players.ToList();

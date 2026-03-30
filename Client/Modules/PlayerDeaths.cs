@@ -11,17 +11,34 @@ namespace SSMPEssentials.Client.Modules
     {
         public static CauseOfDeath LatestCause = CauseOfDeath.Generic;
         public static ushort LatestPlayerAttack = 0;
+        public static DateTime LastDamageTime = DateTime.Now;
         public static DateTime PlayerAttackTime = DateTime.MinValue;
+
+        public static void Init()
+        {
+            var damagedFsmRegisters = HeroController.instance.gameObject.GetComponents<EventRegister>();
+            var damageRegister = damagedFsmRegisters.FirstOrDefault(r => r.subscribedEvent == "HERO DAMAGED");
+            if (damageRegister != null)
+            {
+                damageRegister.ReceivedEvent += LastDitchEffort;
+            }
+        }
+        
+        private static void LastDitchEffort()
+        {
+            if (LastDamageTime.AddSeconds(1) < DateTime.Now)
+            {
+                LastDamageTime = DateTime.Now;
+                LatestCause = CauseOfDeath.Generic;
+            }
+        }
 
         public static void OnDeath()
         {
             if (!Client.ServerSettings.DeathMessagesEnabled) return;
 
-            var ranAway = false;
-            if (PlayerAttackTime.AddSeconds(15) > DateTime.Now)
-            {
-                ranAway = true;
-            }
+            var ranAway = PlayerAttackTime.AddSeconds(15) > DateTime.Now;
+
             PacketSender.SendDeath(LatestCause, LatestPlayerAttack, ranAway);
 
             var currentScene = SceneManager.GetActiveScene().name;
@@ -39,6 +56,19 @@ namespace SSMPEssentials.Client.Modules
 
         public static void DetermineCauseOfDamage(DamageHero damager)
         {
+            LastDamageTime = DateTime.Now;
+            if (damager.GetComponentInParent<FireballProjectile>())
+            {
+                LatestCause = CauseOfDeath.Coal;
+                return;
+            }
+
+            if (damager.CompareTag("Explosion"))
+            {
+                LatestCause = CauseOfDeath.Explosion;
+                return;
+            }
+
             bool isPlayer = false;
             var parent = damager.transform;
             while (parent != null && !isPlayer)
@@ -64,7 +94,6 @@ namespace SSMPEssentials.Client.Modules
             }
 
             LatestCause = DetermineHazardType(damager.hazardType);
-            Log.LogDebug(LatestCause);
         }
 
         static CauseOfDeath DetermineHazardType(HazardType hazardType)
@@ -81,7 +110,7 @@ namespace SSMPEssentials.Client.Modules
                 HazardType.EXPLOSION => CauseOfDeath.Explosion,
                 HazardType.SINK => CauseOfDeath.Sink,
                 HazardType.STEAM => CauseOfDeath.Steam,
-                HazardType.RESPAWN_PIT => CauseOfDeath.Pit,
+                HazardType.RESPAWN_PIT => CauseOfDeath.Generic,
                 _ => CauseOfDeath.Generic
             };
         }

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using SSMPEssentials.Utils;
+using System;
 
 namespace SSMPEssentials.Client.Modules.Patches
 {
@@ -10,7 +11,11 @@ namespace SSMPEssentials.Client.Modules.Patches
         [HarmonyPatch(typeof(DamageHero), nameof(DamageHero.OnAwake))]
         public static void DamageHeroAwake(DamageHero __instance)
         {
-            __instance.HeroDamaged += () => PlayerDeaths.DetermineCauseOfDamage(__instance);
+            __instance.HeroDamaged += () =>
+            {
+                PlayerDeaths.DetermineCauseOfDamage(__instance);
+                Log.LogDebug(PlayerDeaths.LatestCause);
+            };
         }
 
         [HarmonyPrefix]
@@ -20,6 +25,7 @@ namespace SSMPEssentials.Client.Modules.Patches
             bool canDoDamage = !__instance.takeNoDamage && CheatManager.Invincibility == CheatManager.InvincibilityStates.Off && ToolItemManager.ActiveState != ToolsActiveStates.Cutscene && !__instance.cState.transitioning;
             if (!canDoDamage) return;
 
+            PlayerDeaths.LastDamageTime = DateTime.Now;
             if (isFrostDamage)
             {
                 Log.LogInfo("Froze");
