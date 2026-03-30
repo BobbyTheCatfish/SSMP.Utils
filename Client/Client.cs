@@ -19,7 +19,7 @@ namespace SSMPEssentials.Client
 
         internal static Client instance;
 
-        internal static ServerSettings ServerSettings = ServerSettings.ReadFromFile();
+        internal static ServerSettings ServerSettings = new(true);
 
         internal static Action OnServerSettingsUpdate = () => { };
 

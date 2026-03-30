@@ -28,7 +28,7 @@ namespace SSMPEssentials.Server
 
             serverApi.CommandManager.RegisterCommand(new SettingsCommand());
 
-            ServerSettings.ReadFromFile();
+            ServerSettings = ServerSettings.ReadFromFile();
             PacketReceiver.Init();
             PacketSender.Init();
             Log.LogInfo("SSMP Essentials Server Initialized");
